@@ -1,6 +1,21 @@
+using DotNetEnv;
+using notification_service.infrastructure.email_sender;
+
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsDevelopment())
+{
+    Env.Load("dev.env");
+}
+else
+{
+    Env.Load(".env");
+}
 // Add services to the container.
+
+//builder.Services.AddGrpc();
+
+builder.Services.AddEmailSender();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -20,6 +35,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+//app.MapGrpcService<NotifyService>();
 app.MapControllers();
 
 app.Run();
