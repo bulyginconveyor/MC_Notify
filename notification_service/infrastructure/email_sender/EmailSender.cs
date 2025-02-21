@@ -1,12 +1,12 @@
 using EmailSenderSMTP;
 using notification_service.infrastructure.result;
-using user_service.services.result;
 
 namespace notification_service.services.email_sender;
 
 public class EmailSender(SenderSMTP senderSmtp)
 {
-    private string _appAddress = Environment.GetEnvironmentVariable("APP_ADDRESS");
+    private string _appAddress = Environment.GetEnvironmentVariable("APP_ADDRESS") ??
+                                 throw new Exception("APP_ADDRESS not set!");
     
     //TODO: Сделать
     public async Task<Result> SendEmailConfirmEmail(string registerDataEmail, string code)
@@ -25,6 +25,6 @@ public class EmailSender(SenderSMTP senderSmtp)
 
     private string CreateConfirmLink(string registerDataEmail, string code)
     {
-        return $"{_appAddress}/api/confirm?email={registerDataEmail}&code={code}";
+        return $"{_appAddress}/api/confirm_email?email={registerDataEmail}&code={code}";
     }
 }
