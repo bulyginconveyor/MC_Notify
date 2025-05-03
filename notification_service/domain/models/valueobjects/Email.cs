@@ -1,10 +1,13 @@
 using System.Text.RegularExpressions;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace notification_service.domain.models.valueobjects;
 
 public record Email
 {
+    [BsonElement("address")]
     public string EmailAddress { get; private set; }
+    [BsonElement("confrim_email")]
     public DateTime? ConfirmEmail { get; private set; }
 
     public static Email Create(string emailAddress)
