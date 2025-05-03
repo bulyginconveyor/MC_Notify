@@ -1,5 +1,6 @@
 using DotNetEnv;
-using notification_service.infrastructure.email_sender;
+using notification_service.infrastructure.kafka;
+using notification_service.infrastructure.senders.email_sender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,15 +8,13 @@ if (builder.Environment.IsDevelopment())
 {
     Env.Load("dev.env");
 }
-else
-{
-    Env.Load(".env");
-}
 // Add services to the container.
 
 //builder.Services.AddGrpc();
 
 builder.Services.AddEmailSender();
+
+builder.Services.AddKafkaConsumer();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -31,7 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
