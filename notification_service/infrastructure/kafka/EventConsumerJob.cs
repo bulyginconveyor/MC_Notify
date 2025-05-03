@@ -1,5 +1,8 @@
+using System.Text.Json;
 using Confluent.Kafka;
-using notification_service.services.email_sender;
+using Newtonsoft.Json;
+using notification_service.application.dto;
+using notification_service.infrastructure.senders.email_sender;
 
 namespace notification_service.infrastructure.kafka;
 
@@ -38,34 +41,42 @@ public class EventConsumerJob(
         {
             try
             {
-                var consumerMainResult = consumerMain.Consume(TimeSpan.FromSeconds(5));
-                var consumerSendToEmailResult = consumerSendToEmail.Consume(TimeSpan.FromSeconds(5));
+                var consumerMainResult = consumerMain.Consume(TimeSpan.FromSeconds(2.5));
+                var consumerSendToEmailResult = consumerSendToEmail.Consume(TimeSpan.FromSeconds(2.5));
 
                 if (consumerMainResult == null && consumerSendToEmailResult == null)
                     continue;
 
                 if (consumerMainResult != null)
                 {
-                    continue; //TODO: Send notify-message to user
+                    //TODO: Send notify-message to user
+
+                    var res = JsonConvert.DeserializeObject<Notify>(consumerMainResult.Message.Value);
+                    
+                    
+                    
+                    continue;
                 }
 
                 if (consumerSendToEmailResult != null)
                 {
                     var msg = consumerSendToEmailResult.Message.Value.Split(',');
-                    
+
                     if (msg.Length != 2)
                         continue; //TODO: Отработка ошибки парсинга
-                        
+
                     _ = await _sender.SendEmailConfirmEmail(msg[0], msg[1]);
-                    
-                    continue; 
                 }
 
             }
             catch (OperationCanceledException)
             {
                 //Ignore
-            }                   
+            }
+            catch (Exception ex)
+            {
+                //TODO: Logging error
+            }
         }
     }
 }

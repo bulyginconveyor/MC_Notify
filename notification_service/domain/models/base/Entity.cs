@@ -4,5 +4,5 @@ namespace notification_service.domain.models.@base;
 
 public class Entity : IEntity<Guid>
 {
-    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
 }

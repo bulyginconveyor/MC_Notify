@@ -1,8 +1,7 @@
 using EmailSenderSMTP;
-using notification_service.services.email_sender;
 using static System.String;
 
-namespace notification_service.infrastructure.email_sender;
+namespace notification_service.infrastructure.senders.email_sender;
 
 public static class ServiceProviderExtensionsEmailSender
 {

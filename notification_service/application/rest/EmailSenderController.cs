@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using notification_service.services.email_sender;
+using notification_service.infrastructure.senders.email_sender;
 
 namespace notification_service.application.rest
 {
@@ -12,8 +12,10 @@ namespace notification_service.application.rest
         public async Task<IActionResult> SendEmailConfirmEmail(string registerDataEmail, string code)
         {
             var result = await sender.SendEmailConfirmEmail(registerDataEmail, code);
-            
-            return Ok(result);
+
+            return result.IsSuccess 
+                ? Ok() 
+                : BadRequest(result.Error);
         }
     }
 }
