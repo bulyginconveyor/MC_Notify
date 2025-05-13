@@ -11,9 +11,11 @@ public class EmailSender(SenderSMTP senderSmtp)
     
     public async Task<Result> SendEmailConfirmEmail(string registerDataEmail, string code)
     {
-        var confirmLink = CreateConfirmLink(registerDataEmail, code);
-
-        var body =
+        var confirmMessage = CreateConfrimMessage(code);
+        
+        /*
+         var confirmLink = CreateConfirmLink(registerDataEmail, code);
+         var body =
             $"""
              <html>
                 <body>
@@ -30,6 +32,13 @@ public class EmailSender(SenderSMTP senderSmtp)
             "MoneyCushion.App",
             "Подтверждение регистрации на MoneyCushion.App",
             body
+        );*/
+
+        var message = senderSmtp.CreateMailMessageBodyIsText(
+            registerDataEmail,
+            "MoneyCushion.App",
+            "Подтверждение регистрации на MoneyCushion.App",
+            confirmMessage
         );
         
         await senderSmtp.SendMailAsync(message);
@@ -37,8 +46,11 @@ public class EmailSender(SenderSMTP senderSmtp)
         return Result.Success();
     }
 
+    public string CreateConfrimMessage(string code)
+        => $"Код потверждения регистрации: {code}";
+    
     private string CreateConfirmLink(string registerDataEmail, string code) 
-        => $"{_appAddress}/api/auth/confirm_email?email={registerDataEmail}&code={code}";
+        => $"{_appAddress}/api/confirm_email?email={registerDataEmail}&code={code}";
 
     public async Task<Result> SendNotifyToUser(Notify notify)
     {
